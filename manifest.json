@@ -1,0 +1,27 @@
+{
+  "name": "EigenLab — مختبر الاتجاهات الذاتية",
+  "short_name": "EigenLab",
+  "description": "مختبر بصري تفاعلي لفهم المتجهات والقيم الذاتية.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f6f2",
+  "theme_color": "#185342",
+  "icons": [
+    {
+      "src": "/eigenlab-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/eigenlab-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
