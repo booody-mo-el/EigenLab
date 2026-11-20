@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <meta name="description" content="مختبر بصري تفاعلي لفهم المتجهات والقيم الذاتية من خلال التحويلات الهندسية.">
+  <title>EigenLab — مختبر الاتجاهات الذاتية</title>
+  <link rel="icon" href="/eigenlab.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="EigenLab الصفحة الرئيسية">
+      <span class="brand-mark" aria-hidden="true"><span></span><i></i></span>
+      <span class="brand-name">Eigen<span>Lab</span><small>مختبر الاتجاهات الذاتية</small></span>
+    </a>
+    <nav class="main-nav" aria-label="التنقل الرئيسي">
+      <a href="#idea">الفكرة</a>
+      <a href="#lab">المختبر</a>
+      <a href="#practice">اختبر نفسك</a>
+    </nav>
+    <div class="topbar-tag"><span class="live-dot"></span> الجبر الخطي، بصريًا</div>
+  </header>
+
+  <main id="home">
+    <section class="hero" id="idea">
+      <div class="hero-copy">
+        <div class="eyebrow"><span>LINEAR ALGEBRA</span><span class="eyebrow-line"></span><span>01 / 03</span></div>
+        <h1>بعض الاتجاهات<br>لا <em>تتغيّر.</em></h1>
+        <p class="hero-lede">عندما تؤثّر مصفوفة في فضاء، تتبدّل معظم المتجهات. لكن هناك اتجاهات خاصة تبقى على خطّها — تلك هي <strong>المتجهات الذاتية.</strong></p>
+        <a class="text-link" href="#lab">جرّب التحويل بنفسك <span aria-hidden="true">←</span></a>
+      </div>
+      <div class="hero-art" aria-label="رسم توضيحي لمتجه قبل تحويله وبعده مع خط اتجاه ثابت">
+        <div class="art-caption art-caption-top">A TRANSFORMATION</div>
+        <svg viewBox="0 0 430 300" role="img" aria-label="اتجاه أخضر ثابت تحت تحويل المصفوفة">
+          <defs>
+            <pattern id="heroGrid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M 28 0 L 0 0 0 28" fill="none" stroke="#dce3dc" stroke-width="1"/></pattern>
+            <marker id="heroArrowOrange" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#ee755b"/></marker>
+            <marker id="heroArrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#3d8cbb"/></marker>
+          </defs>
+          <rect x="16" y="22" width="398" height="254" rx="8" fill="url(#heroGrid)"/>
+          <line x1="214" y1="252" x2="214" y2="40" stroke="#87938d" stroke-width="1.5"/>
+          <line x1="47" y1="195" x2="384" y2="195" stroke="#87938d" stroke-width="1.5"/>
+          <polygon points="214,195 270,195 295,160 239,160" fill="#dcebea" stroke="#9abeb8" stroke-width="1.2"/>
+          <line x1="115" y1="248" x2="338" y2="88" stroke="#408d77" stroke-width="2" stroke-dasharray="5 5" opacity=".75"/>
+          <line x1="214" y1="195" x2="275" y2="151" stroke="#ee755b" stroke-width="4" marker-end="url(#heroArrowOrange)"/>
+          <line x1="214" y1="195" x2="337" y2="107" stroke="#3d8cbb" stroke-width="4" marker-end="url(#heroArrowBlue)"/>
+          <circle cx="214" cy="195" r="4" fill="#263b39"/>
+          <text x="277" y="151" fill="#b7503b" font-size="13" font-family="sans-serif">v</text>
+          <text x="342" y="106" fill="#286b91" font-size="13" font-family="sans-serif">Av</text>
+          <text x="144" y="91" fill="#408d77" font-size="11" font-family="sans-serif" letter-spacing="1">EIGEN-DIRECTION</text>
+        </svg>
+        <div class="art-caption art-caption-bottom"><span>01 — BEFORE</span><span>02 — AFTER</span></div>
+        <div class="hero-stamp"><span>v</span><span>=</span><span>λ</span><span>v</span></div>
+      </div>
+    </section>
+
+    <section class="definition-strip" aria-label="التعريف الرياضي">
+      <div class="definition-label"><span class="tiny-mark"></span> العلاقة التي نبحث عنها</div>
+      <div class="formula-main"><span class="math-a">A</span><span class="math-v">v</span><span class="equals">=</span><span class="math-lambda">λ</span><span class="math-v">v</span></div>
+      <p>التحويل يغيّر الطول،<br>لا الاتجاه.</p>
+    </section>
+
+    <section class="lab-section" id="lab">
+      <div class="section-heading">
+        <div><div class="eyebrow"><span>THE INTERACTIVE LAB</span><span class="eyebrow-line"></span><span>02 / 03</span></div><h2>حرّك المصفوفة.<br><em>راقب الاتجاه.</em></h2></div>
+        <p>عدّل عناصر المصفوفة أو اختر مثالًا. الخط الأخضر يبيّن اتجاهًا ذاتيًا؛ والسهم الأزرق يبيّن ما يحدث بعد التحويل.</p>
+      </div>
+
+      <div class="preset-row" aria-label="أمثلة جاهزة">
+        <span class="preset-label">ابدأ بمثال</span>
+        <button class="preset active" type="button" data-example="stretch">تمدد غير متساوٍ</button>
+        <button class="preset" type="button" data-example="shear">قصّ مائل</button>
+        <button class="preset" type="button" data-example="reflection">انعكاس</button>
+        <button class="preset" type="button" data-example="rotation">دوران 30°</button>
+      </div>
+
+      <div class="lab-layout">
+        <aside class="control-panel" aria-label="إعدادات التحويل">
+          <div class="panel-title"><span class="panel-number">A</span><div><h3>مصفوفة التحويل</h3><p>غيّر القيم وشاهد أثرها</p></div></div>
+          <div class="matrix-control" dir="ltr" aria-label="عناصر المصفوفة">
+            <span class="matrix-bracket left-bracket" aria-hidden="true">[</span>
+            <label class="sr-only" for="m00">عنصر الصف الأول والعمود الأول</label><input id="m00" class="matrix-input" inputmode="decimal" type="number" step="0.1" value="2">
+            <label class="sr-only" for="m01">عنصر الصف الأول والعمود الثاني</label><input id="m01" class="matrix-input" inputmode="decimal" type="number" step="0.1" value="0">
+            <label class="sr-only" for="m10">عنصر الصف الثاني والعمود الأول</label><input id="m10" class="matrix-input" inputmode="decimal" type="number" step="0.1" value="0">
+            <label class="sr-only" for="m11">عنصر الصف الثاني والعمود الثاني</label><input id="m11" class="matrix-input" inputmode="decimal" type="number" step="0.1" value="0.65">
+            <span class="matrix-bracket right-bracket" aria-hidden="true">]</span>
+          </div>
+          <div class="matrix-labels" dir="ltr"><span>a</span><span>b</span><span>c</span><span>d</span></div>
+          <div class="divider"></div>
+          <div class="panel-title vector-title"><span class="vector-icon">v</span><div><h3>المتجه الذي نختبره</h3><p>حرّك طرف المتجه أو أدخل مركباته</p></div></div>
+          <div class="vector-inputs" dir="ltr">
+            <label><span>x</span><input id="vx" type="number" step="0.1" value="1.2" aria-label="المركبة السينية للمتجه"></label>
+            <label><span>y</span><input id="vy" type="number" step="0.1" value="0.8" aria-label="المركبة الصادية للمتجه"></label>
+          </div>
+          <div class="divider"></div>
+          <div class="result-intro"><span class="result-indicator"></span> الاتجاهات الذاتية للمصفوفة</div>
+          <div id="eigen-results" class="eigen-results" aria-live="polite"></div>
+          <div class="rule-note"><span class="rule-symbol">λ</span><p><strong>القيمة الذاتية</strong> تخبرنا بمقدار التمدّد أو الانكماش على الاتجاه الذاتي.</p></div>
+        </aside>
+
+        <div class="visual-panel">
+          <div class="plot-topline"><span>المستوى الإحداثي</span><span class="plot-status"><i></i> مباشر</span></div>
+          <div class="plot-wrap">
+            <svg id="plot" viewBox="0 0 520 520" role="img" aria-label="رسم تفاعلي لتحويل المتجه والمستوى"></svg>
+          </div>
+          <div class="legend" aria-label="مفتاح الرسم">
+            <span><i class="legend-dot original"></i> المتجه v</span>
+            <span><i class="legend-dot transformed"></i> صورته Av</span>
+            <span><i class="legend-line"></i> اتجاه ذاتي</span>
+          </div>
+          <div class="vector-readout" aria-live="polite">
+            <div><span class="readout-label">قبل التحويل</span><code id="before-value">v = (1.20, 0.80)</code></div>
+            <span class="readout-arrow" aria-hidden="true">←</span>
+            <div><span class="readout-label">بعد التحويل</span><code id="after-value">Av = (2.40, 0.52)</code></div>
+            <div id="vector-status" class="vector-status">الاتجاه تغيّر تحت هذا التحويل</div>
+          </div>
+        </div>
+      </div>
+      <div class="experiment-hint"><span>جرّب بنفسك</span><p>في «التمدد غير المتساوي»، غيّر المتجه إلى <code>(1, 0)</code>. هل بقي اتجاهه كما هو؟ ثم جرّب المتجه <code>(1, 1)</code>.</p><a href="#practice">انتقل إلى سؤال التحقق <span aria-hidden="true">↓</span></a></div>
+    </section>
+
+    <section class="explain-section">
+      <div class="explain-heading"><div class="eyebrow"><span>THE IDEA, STEP BY STEP</span><span class="eyebrow-line"></span></div><h2>ما الذي يحدث<br>هندسيًا؟</h2></div>
+      <div class="explain-cards">
+        <article class="explain-card"><span class="card-index">01</span><h3>المصفوفة تحوّل</h3><p>كل مصفوفة <span class="math-inline">A</span> تمثّل تحويلًا خطيًا. فهي ترسل كل متجه <span class="math-inline">v</span> إلى متجه جديد <span class="math-inline">Av</span>، وقد يتغير اتجاهه وطوله.</p></article>
+        <article class="explain-card featured-card"><span class="card-index">02</span><h3>بعض الاتجاهات تبقى</h3><p>إذا كان <span class="math-inline">Av</span> مضاعفًا للمتجه <span class="math-inline">v</span>، فهذا يعني أن المتجهين على الخط نفسه. اتجاه <span class="math-inline">v</span> محفوظ، ولذلك نسميه متجهًا ذاتيًا.</p></article>
+        <article class="explain-card"><span class="card-index">03</span><h3>المضاعف هو λ</h3><p>العدد <span class="math-inline">λ</span> هو عامل القياس. إذا كان سالبًا، ينعكس الاتجاه. وإذا كان بين صفر وواحد، يقصر المتجه. وإذا زاد على واحد، يطول.</p></article>
+      </div>
+      <div class="caution-note"><span class="caution-mark">i</span><p><strong>ملاحظة مهمة:</strong> الدوران وحده في المستوى بزاوية مثل 30° لا يملك متجهات ذاتية حقيقية غير صفرية؛ لأن كل اتجاه غير صفري يدور إلى اتجاه مختلف. أما الانعكاس أو التمدد فقد يحافظان على اتجاه أو أكثر.</p></div>
+    </section>
+
+    <section class="practice-section" id="practice">
+      <div class="practice-copy"><div class="eyebrow"><span>QUICK CHECK</span><span class="eyebrow-line"></span><span>03 / 03</span></div><h2>هل بقي الاتجاه؟</h2><p>للمصفوفة <code>A = [[2, 1], [0, 3]]</code> والمتجه <code>v = (1, 1)</code>، نحسب <code>Av = (3, 3)</code>.</p><p class="question-line">هل <span class="math-inline">v</span> متجه ذاتي؟ وإذا كان كذلك، فما قيمة <span class="math-inline">λ</span>؟</p></div>
+      <div class="quiz-card">
+        <div class="quiz-label"><span>سؤال سريع</span><span>اختر إجابة</span></div>
+        <div class="quiz-options" role="group" aria-label="خيارات الإجابة">
+          <button type="button" class="quiz-option" data-answer="two"><span class="option-letter">A</span><span>نعم، و λ = 2</span></button>
+          <button type="button" class="quiz-option" data-answer="three"><span class="option-letter">B</span><span>نعم، و λ = 3</span></button>
+          <button type="button" class="quiz-option" data-answer="no"><span class="option-letter">C</span><span>لا، الاتجاه تغيّر</span></button>
+        </div>
+        <div id="quiz-feedback" class="quiz-feedback" aria-live="polite">اختر إجابة لترى التفسير.</div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><a class="brand footer-brand" href="#home"><span class="brand-mark" aria-hidden="true"><span></span><i></i></span><span class="brand-name">Eigen<span>Lab</span><small>مختبر الاتجاهات الذاتية</small></span></a><p>تعلّم الجبر الخطي بالنظر والتجربة.</p><span class="student-credit">إعداد: <strong>Body Mo</strong></span></footer>
+</body>
+</html>
