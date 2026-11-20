@@ -58,3 +58,16 @@ html[data-theme="dark"] .brand-mark:before{background:var(--forest)}
 html[data-theme="dark"] .brand-mark i{background:var(--forest)}
 html[data-theme="dark"] .live-dot,html[data-theme="dark"] .plot-status i{box-shadow:0 0 0 3px #2e4337}
 @media(max-width:700px){html[dir="ltr"] .explain-card{border-right:0}}
+
+/* PWA install banner */
+.install-banner{position:fixed;z-index:20;top:86px;left:18px;display:flex;align-items:center;gap:11px;max-width:min(390px,calc(100vw - 36px));padding:12px 13px;background:#fff;border:1px solid #dce5dd;border-radius:9px;box-shadow:0 10px 35px rgba(25,55,40,.16);direction:ltr;color:#1d2b2b;animation:installBannerIn .25s ease-out}
+.install-banner img{flex:none;border-radius:9px}
+.install-banner-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:2px}
+.install-banner-copy strong{font:600 13px var(--mono);color:#185342}
+.install-banner-copy span{font:11px var(--arabic);color:#68766e;line-height:1.5}
+.install-action{border:0;border-radius:6px;background:#185342;color:white;padding:8px 12px;font:600 12px var(--mono);cursor:pointer}
+.install-dismiss{border:0;background:transparent;color:#7b8981;font-size:20px;line-height:1;cursor:pointer;padding:2px}
+@keyframes installBannerIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+html[data-theme="dark"] .install-banner{background:#202e27;border-color:#405349;color:#e2ebe4}
+html[data-theme="dark"] .install-banner-copy span{color:#b8c7bd}
+@media(max-width:480px){.install-banner{top:72px;left:10px;max-width:calc(100vw - 20px);gap:8px;padding:10px}.install-banner-copy span{font-size:10px}.install-action{padding:8px 9px}}
