@@ -334,3 +334,74 @@
   setLanguage(readPreference('eigenlab-language', 'ar'), false);
   setTheme(readPreference('eigenlab-theme', 'light'), false);
 })();
+
+ 
+// PWA installation support
+(() => {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/service-worker.js").catch(error => {
+        console.error("EigenLab service worker registration failed:", error);
+      });
+    });
+  }
+
+  let installPrompt = null;
+  let installBanner = null;
+  const isStandalone = () =>
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+
+  function makeBanner() {
+    if (installBanner || isStandalone()) return;
+    installBanner = document.createElement("aside");
+    installBanner.className = "install-banner";
+    installBanner.setAttribute("aria-label", "Install EigenLab");
+    installBanner.innerHTML = `
+      <img src="/eigenlab.svg" alt="" width="38" height="38">
+      <div class="install-banner-copy">
+        <strong>Install EigenLab</strong>
+        <span>أضف التطبيق إلى جهازك للوصول إليه بسهولة</span>
+      </div>
+      <button type="button" class="install-action">Install</button>
+      <button type="button" class="install-dismiss" aria-label="Close">×</button>
+    `;
+    document.body.appendChild(installBanner);
+    installBanner.querySelector(".install-dismiss").addEventListener("click", () => {
+      installBanner?.remove();
+      installBanner = null;
+    });
+    installBanner.querySelector(".install-action").addEventListener("click", async () => {
+      if (installPrompt) {
+        installPrompt.prompt();
+        await installPrompt.userChoice;
+        installPrompt = null;
+        installBanner?.remove();
+        installBanner = null;
+      } else {
+        installBanner.querySelector(".install-banner-copy span").textContent =
+          /iPhone|iPad|iPod/i.test(navigator.userAgent)
+            ? "اضغط مشاركة ثم اختر Add to Home Screen لإضافة التطبيق."
+            : "افتح قائمة المتصفح ثم اختر Install app أو تثبيت التطبيق.";
+      }
+    });
+  }
+
+  window.addEventListener("beforeinstallprompt", event => {
+    event.preventDefault();
+    installPrompt = event;
+    makeBanner();
+  });
+
+  window.addEventListener("appinstalled", () => {
+    installPrompt = null;
+    installBanner?.remove();
+    installBanner = null;
+  });
+
+  if (!isStandalone() && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    window.addEventListener("load", () => {
+      if (!isStandalone()) makeBanner();
+    }, { once: true });
+  }
+})();
