@@ -8,8 +8,8 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#f5f6f2",
-  "theme_color": "#185342",
+  "background_color": "#001c1b",
+  "theme_color": "#008d83",
   "icons": [
     {
       "src": "/eigenlab-192.svg",
