@@ -71,8 +71,7 @@
 
   function getCurrent() {
     const matrix = matrixInputs.map(read);
-    let vector = [read(vxInput), read(vyInput)];
-    if (Math.hypot(...vector) < 0.001) vector = [1, 0];
+    const vector = [read(vxInput), read(vyInput)];
     return { matrix, vector, image: matrixAction(matrix, vector) };
   }
 
@@ -119,7 +118,11 @@
     if (eigen.noReal) {
       parts.push(`<text x="260" y="83" text-anchor="middle" fill="#87938d" font-size="12">لا يوجد اتجاه ذاتي حقيقي لهذا الدوران</text>`);
     } else if (eigen.allDirections) {
-      parts.push(`<line x1="95" y1="425" x2="425" y2="95" stroke="${palette.eigen}" stroke-width="1.6" stroke-dasharray="6 5" opacity=".42"/>`);
+      [0, Math.PI / 6, Math.PI / 3, Math.PI / 2].forEach(angle => {
+        const dx = Math.cos(angle) * unit * 5.7;
+        const dy = Math.sin(angle) * unit * 5.7;
+        parts.push(line(origin - dx, origin + dy, origin + dx, origin - dy, palette.eigen, 1.6, '6 5'));
+      });
     } else {
       eigen.directions.forEach((direction, index) => {
         const x2 = origin + direction[0] * unit * 5.7;
@@ -162,9 +165,14 @@
     afterValue.textContent = `Av = (${fmt(image[0], 2)}, ${fmt(image[1], 2)})`;
 
     const normSq = vector[0] * vector[0] + vector[1] * vector[1];
+    if (normSq < 1e-12) {
+      vectorStatus.classList.remove('is-eigen');
+      vectorStatus.textContent = 'المتجه الصفري ليس متجهًا ذاتيًا؛ اختر متجهًا غير صفري.';
+      return;
+    }
     const factor = (vector[0] * image[0] + vector[1] * image[1]) / normSq;
     const residual = Math.hypot(image[0] - factor * vector[0], image[1] - factor * vector[1]);
-    const isEigen = residual < 0.035 * Math.max(1, Math.hypot(...image));
+    const isEigen = residual < 0.035 * Math.max(1e-6, Math.hypot(...image));
     vectorStatus.classList.toggle('is-eigen', isEigen);
     vectorStatus.textContent = isEigen
       ? `نعم — هذا اتجاه ذاتي، ومعامل القياس λ ≈ ${fmt(factor)}`
