@@ -13,10 +13,56 @@
   const beforeValue = document.getElementById('before-value');
   const afterValue = document.getElementById('after-value');
   const vectorStatus = document.getElementById('vector-status');
-  const palette = { grid: '#e9eeea', axis: '#a8b3ac', text: '#849188', original: '#ee755b', transformed: '#3d8cbb', eigen: '#26725f', square: '#dbeae2', circle: '#91b6a2' };
+  const palette = { background: '#fbfcfa', grid: '#e9eeea', axis: '#a8b3ac', text: '#849188', original: '#ee755b', transformed: '#3d8cbb', eigen: '#26725f', square: '#dbeae2', circle: '#91b6a2' };
   const origin = 260;
   const unit = 43;
   let activeExample = 'stretch';
+  let currentLanguage = 'ar';
+  let currentTheme = 'light';
+  let lastQuizAnswer = null;
+  const languageLabel = document.getElementById('language-label');
+  const languageToggle = document.getElementById('language-toggle');
+  const themeLabel = document.getElementById('theme-label');
+  const themeIcon = document.getElementById('theme-icon');
+  const themeToggle = document.getElementById('theme-toggle');
+  const textTranslations = {
+    'مختبر الاتجاهات الذاتية': 'Eigenvector Lab', 'الفكرة': 'The idea', 'المختبر': 'Interactive lab', 'اختبر نفسك': 'Test yourself',
+    'الجبر الخطي، بصريًا': 'Linear algebra, visualized', 'بعض الاتجاهات': 'Some directions', 'لا': "don't", 'تتغيّر.': 'change.',
+    'عندما تؤثّر مصفوفة في فضاء، تتبدّل معظم المتجهات. لكن هناك اتجاهات خاصة تبقى على خطّها — تلك هي': 'When a matrix acts on a space, most vectors change. But a few special directions stay on their line — those are',
+    'المتجهات الذاتية.': 'eigenvectors.', 'جرّب التحويل بنفسك': 'Try the transformation', 'العلاقة التي نبحث عنها': 'The relationship we are looking for',
+    'التحويل يغيّر الطول،': 'The transformation changes length,', 'لا الاتجاه.': 'not direction.', 'حرّك المصفوفة.': 'Move the matrix.',
+    'راقب الاتجاه.': 'Watch the direction.', 'عدّل عناصر المصفوفة أو اختر مثالًا. الخط الأخضر يبيّن اتجاهًا ذاتيًا؛ والسهم الأزرق يبيّن ما يحدث بعد التحويل.': 'Edit the matrix entries or choose an example. The green line marks an eigenvector direction; the blue arrow shows what happens after the transformation.',
+    'ابدأ بمثال': 'Start with an example', 'تمدد غير متساوٍ': 'Unequal stretch', 'قصّ مائل': 'Shear', 'انعكاس': 'Reflection', 'دوران 30°': '30° rotation',
+    'مصفوفة التحويل': 'Transformation matrix', 'غيّر القيم وشاهد أثرها': 'Change the entries and see the effect', 'عنصر الصف الأول والعمود الأول': 'Row 1, column 1',
+    'عنصر الصف الأول والعمود الثاني': 'Row 1, column 2', 'عنصر الصف الثاني والعمود الأول': 'Row 2, column 1', 'عنصر الصف الثاني والعمود الثاني': 'Row 2, column 2',
+    'المتجه الذي نختبره': 'Vector under test', 'حرّك طرف المتجه أو أدخل مركباته': 'Adjust the vector or enter its components', 'المركبة السينية للمتجه': 'Vector x-component', 'المركبة الصادية للمتجه': 'Vector y-component',
+    'الاتجاهات الذاتية للمصفوفة': 'Eigenvector directions of this matrix', 'القيمة الذاتية': 'Eigenvalue', 'تخبرنا بمقدار التمدّد أو الانكماش على الاتجاه الذاتي.': 'It tells us how much the eigenvector direction stretches or shrinks.',
+    'المستوى الإحداثي': 'Coordinate plane', 'مباشر': 'Live', 'المتجه v': 'Vector v', 'صورته Av': 'Its image Av', 'اتجاه ذاتي': 'Eigenvector direction', 'قبل التحويل': 'Before transformation', 'بعد التحويل': 'After transformation',
+    'الاتجاه تغيّر تحت هذا التحويل': "This transformation changes the vector's direction", 'جرّب بنفسك': 'Try it yourself',
+    'في «التمدد غير المتساوي»، غيّر المتجه إلى': 'With “Unequal stretch,” set the vector to', '. هل بقي اتجاهه كما هو؟ ثم جرّب المتجه': '. Does its direction stay the same? Now try the vector',
+    'انتقل إلى سؤال التحقق': 'Go to the quick check', 'ما الذي يحدث': 'What happens', 'هندسيًا؟': 'geometrically?', 'المصفوفة تحوّل': 'A matrix transforms',
+    'كل مصفوفة': 'Every matrix', 'تمثّل تحويلًا خطيًا. فهي ترسل كل متجه': 'represents a linear transformation. It sends each vector', 'إلى متجه جديد': 'to a new vector',
+    '، وقد يتغير اتجاهه وطوله.': ', which may change direction and length.', 'بعض الاتجاهات تبقى': 'Some directions stay fixed', 'إذا كان': 'If', 'مضاعفًا للمتجه': 'a scalar multiple of',
+    '، فهذا يعني أن المتجهين على الخط نفسه. اتجاه': ', the two vectors lie on the same line. The direction of', 'محفوظ، ولذلك نسميه متجهًا ذاتيًا.': 'is preserved, so we call it an eigenvector.',
+    'المضاعف هو λ': 'The multiplier is λ', 'العدد': 'The number', 'هو عامل القياس. إذا كان سالبًا، ينعكس الاتجاه. وإذا كان بين صفر وواحد، يقصر المتجه. وإذا زاد على واحد، يطول.': 'is the scale factor. A negative value reverses the direction. A value between zero and one shortens the vector; a value above one lengthens it.',
+    'ملاحظة مهمة:': 'Important note:', 'الدوران وحده في المستوى بزاوية مثل 30° لا يملك متجهات ذاتية حقيقية غير صفرية؛ لأن كل اتجاه غير صفري يدور إلى اتجاه مختلف. أما الانعكاس أو التمدد فقد يحافظان على اتجاه أو أكثر.': 'A rotation in the plane by an angle such as 30° has no nonzero real eigenvectors: every nonzero direction turns to a different direction. A reflection or a stretch may preserve one or more directions.',
+    'هل بقي الاتجاه؟': 'Does the direction stay fixed?', 'للمصفوفة': 'For the matrix', 'والمتجه': 'and vector', '، نحسب': ', we get', 'هل': 'Is',
+    'متجه ذاتي؟ وإذا كان كذلك، فما قيمة': 'an eigenvector? If so, what is', '؟': '?', 'سؤال سريع': 'Quick check', 'اختر إجابة': 'Choose an answer',
+    'نعم، و λ = 2': 'Yes, λ = 2', 'نعم، و λ = 3': 'Yes, λ = 3', 'لا، الاتجاه تغيّر': 'No, the direction changed', 'اختر إجابة لترى التفسير.': 'Choose an answer to see the explanation.',
+    'تعلّم الجبر الخطي بالنظر والتجربة.': 'Learn linear algebra by seeing and experimenting.', 'إعداد:': 'Created by:'
+  };
+  const ariaTranslations = {
+    'EigenLab الصفحة الرئيسية': 'EigenLab home', 'التنقل الرئيسي': 'Main navigation', 'التبديل إلى الإنجليزية': 'Switch to English', 'التبديل إلى العربية': 'Switch to Arabic',
+    'تفعيل الوضع الليلي': 'Enable dark mode', 'تفعيل الوضع النهاري': 'Enable light mode', 'رسم توضيحي لمتجه قبل تحويله وبعده مع خط اتجاه ثابت': 'Illustration of a vector before and after a transformation, with a fixed direction',
+    'اتجاه أخضر ثابت تحت تحويل المصفوفة': 'A fixed green direction under a matrix transformation', 'إعدادات التحويل': 'Transformation controls', 'عناصر المصفوفة': 'Matrix entries',
+    'أمثلة جاهزة': 'Ready-made examples', 'خيارات الإجابة': 'Answer choices', 'المركبة السينية للمتجه': 'Vector x-component', 'المركبة الصادية للمتجه': 'Vector y-component',
+    'رسم تفاعلي لتحويل المتجه والمستوى': 'Interactive plot of the vector and transformed plane'
+  };
+  const lightPalette = { background: '#fbfcfa', grid: '#e9eeea', axis: '#a8b3ac', text: '#849188', original: '#ee755b', transformed: '#3d8cbb', eigen: '#26725f', square: '#dbeae2', circle: '#91b6a2' };
+  const darkPalette = { background: '#18241f', grid: '#2e3d36', axis: '#64766d', text: '#a7b5ad', original: '#ff927b', transformed: '#73bee9', eigen: '#83c8a7', square: '#244338', circle: '#6e9a84' };
+  const translatedTextNodes = [];
+  const translatedAriaNodes = [];
+  const tr = (arabic, english) => currentLanguage === 'ar' ? arabic : english;
 
   const read = el => {
     const number = Number(el.value);
@@ -81,7 +127,7 @@
       <marker id="arrow-transformed" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L9 4.5 L0 9 z" fill="${palette.transformed}"/></marker>
       <clipPath id="plot-clip"><rect x="22" y="22" width="476" height="476" rx="2"/></clipPath>
       <style>.plot-label{font:italic 16px Georgia,serif}.axis-label{font:11px 'DM Mono',monospace;fill:${palette.text}}</style>
-    </defs><rect x="18" y="18" width="484" height="484" rx="3" fill="#fbfcfa"/>`];
+    </defs><rect class="plot-surface" x="18" y="18" width="484" height="484" rx="3" fill="${palette.background}"/>`];
     for (let i = -5; i <= 5; i++) {
       const x = origin + i * unit;
       const y = origin - i * unit;
@@ -116,7 +162,7 @@
     parts.push(`<polyline points="${circlePoints.join(' ')}" fill="none" stroke="${palette.circle}" stroke-width="1.2" stroke-dasharray="3 4" opacity=".85"/>`);
 
     if (eigen.noReal) {
-      parts.push(`<text x="260" y="83" text-anchor="middle" fill="#87938d" font-size="12">لا يوجد اتجاه ذاتي حقيقي لهذا الدوران</text>`);
+      parts.push(`<text x="260" y="83" text-anchor="middle" fill="#87938d" font-size="12">${tr('لا يوجد اتجاه ذاتي حقيقي لهذا الدوران', 'No real eigenvector direction for this rotation')}</text>`);
     } else if (eigen.allDirections) {
       [0, Math.PI / 6, Math.PI / 3, Math.PI / 2].forEach(angle => {
         const dx = Math.cos(angle) * unit * 5.7;
@@ -143,16 +189,17 @@
 
   function renderEigen(matrix, eigen) {
     if (eigen.noReal) {
-      eigenResults.innerHTML = '<div class="empty-eigen">هذا الدوران لا يملك قيمًا ذاتية حقيقية؛ لا يبقى أي اتجاه حقيقي على خطه بعد الدوران.</div>';
+      eigenResults.innerHTML = `<div class="empty-eigen">${tr('هذا الدوران لا يملك قيمًا ذاتية حقيقية؛ لا يبقى أي اتجاه حقيقي على خطه بعد الدوران.', 'This rotation has no real eigenvalues; no real direction stays on its line.')}</div>`;
       return;
     }
     if (eigen.allDirections) {
-      eigenResults.innerHTML = `<div class="eigen-card"><div><div class="eigen-main">λ = ${fmt(eigen.values[0])}</div><div class="eigen-direction">كل اتجاه غير صفري متجه ذاتي</div></div><div class="eigen-lambda">A = λI</div></div>`;
+      eigenResults.innerHTML = `<div class="eigen-card"><div><div class="eigen-main">λ = ${fmt(eigen.values[0])}</div><div class="eigen-direction">${tr('كل اتجاه غير صفري متجه ذاتي', 'Every nonzero direction is an eigenvector')}</div></div><div class="eigen-lambda">A = λI</div></div>`;
       return;
     }
     eigenResults.innerHTML = eigen.values.map((lambda, index) => {
       const v = eigen.directions[index];
-      return `<div class="eigen-card"><div><div class="eigen-main">λ = ${fmt(lambda)}</div><div class="eigen-direction">اتجاه تقريبي: (${fmt(v[0])}, ${fmt(v[1])})</div></div><div class="eigen-lambda">${lambda < 0 ? 'انعكاس' : lambda > 1.0001 ? 'تمدد' : lambda < .9999 ? 'انكماش' : 'ثبات'}</div></div>`;
+      const effect = lambda < 0 ? tr('انعكاس', 'reflection') : lambda > 1.0001 ? tr('تمدد', 'stretch') : lambda < .9999 ? tr('انكماش', 'shrink') : tr('ثبات', 'unchanged');
+      return `<div class="eigen-card"><div><div class="eigen-main">λ = ${fmt(lambda)}</div><div class="eigen-direction">${tr('اتجاه تقريبي:', 'Approx. direction:')} (${fmt(v[0])}, ${fmt(v[1])})</div></div><div class="eigen-lambda">${effect}</div></div>`;
     }).join('');
   }
 
@@ -167,7 +214,7 @@
     const normSq = vector[0] * vector[0] + vector[1] * vector[1];
     if (normSq < 1e-12) {
       vectorStatus.classList.remove('is-eigen');
-      vectorStatus.textContent = 'المتجه الصفري ليس متجهًا ذاتيًا؛ اختر متجهًا غير صفري.';
+      vectorStatus.textContent = tr('المتجه الصفري ليس متجهًا ذاتيًا؛ اختر متجهًا غير صفري.', 'The zero vector is not an eigenvector. Choose a nonzero vector.');
       return;
     }
     const factor = (vector[0] * image[0] + vector[1] * image[1]) / normSq;
@@ -175,9 +222,78 @@
     const isEigen = residual < 0.035 * Math.max(1e-6, Math.hypot(...image));
     vectorStatus.classList.toggle('is-eigen', isEigen);
     vectorStatus.textContent = isEigen
-      ? `نعم — هذا اتجاه ذاتي، ومعامل القياس λ ≈ ${fmt(factor)}`
-      : 'ليس اتجاهًا ذاتيًا هنا — تغيّر اتجاه المتجه';
+      ? tr(`نعم — هذا اتجاه ذاتي، ومعامل القياس λ ≈ ${fmt(factor)}`, `Yes — this is an eigenvector direction, with scale factor λ ≈ ${fmt(factor)}`)
+      : tr('ليس اتجاهًا ذاتيًا هنا — تغيّر اتجاه المتجه', 'Not an eigenvector direction here — the vector changed direction');
   }
+
+  function readPreference(key, fallback) {
+    try { return localStorage.getItem(key) || fallback; } catch { return fallback; }
+  }
+
+  function savePreference(key, value) {
+    try { localStorage.setItem(key, value); } catch { /* Preferences are optional. */ }
+  }
+
+  function cacheTranslations() {
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      const key = node.nodeValue.trim();
+      if (Object.prototype.hasOwnProperty.call(textTranslations, key)) translatedTextNodes.push({ node, original: node.nodeValue, key });
+    }
+    document.querySelectorAll('[aria-label]').forEach(element => {
+      const key = element.getAttribute('aria-label');
+      if (Object.prototype.hasOwnProperty.call(ariaTranslations, key)) translatedAriaNodes.push({ element, key });
+    });
+  }
+
+  function updateThemeControls() {
+    const dark = currentTheme === 'dark';
+    themeIcon.textContent = dark ? '☀' : '☾';
+    themeLabel.textContent = currentLanguage === 'ar' ? (dark ? 'نهاري' : 'ليلي') : (dark ? 'Light' : 'Dark');
+    themeToggle.setAttribute('aria-label', currentLanguage === 'ar'
+      ? (dark ? 'تفعيل الوضع النهاري' : 'تفعيل الوضع الليلي')
+      : (dark ? 'Switch to light mode' : 'Switch to dark mode'));
+  }
+
+  function setLanguage(language, persist = true) {
+    currentLanguage = language === 'en' ? 'en' : 'ar';
+    document.documentElement.lang = currentLanguage;
+    document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+    document.body.dataset.language = currentLanguage;
+    translatedTextNodes.forEach(({ node, original, key }) => {
+      const leading = original.match(/^\s*/)[0];
+      const trailing = original.match(/\s*$/)[0];
+      const value = currentLanguage === 'en' ? textTranslations[key] : key;
+      node.nodeValue = `${leading}${value}${trailing}`;
+    });
+    translatedAriaNodes.forEach(({ element, key }) => element.setAttribute('aria-label', currentLanguage === 'en' ? ariaTranslations[key] : key));
+    languageLabel.textContent = currentLanguage === 'ar' ? 'EN' : 'عربي';
+    languageToggle.setAttribute('aria-label', currentLanguage === 'ar' ? 'التبديل إلى الإنجليزية' : 'التبديل إلى العربية');
+    document.title = currentLanguage === 'ar' ? 'EigenLab — مختبر الاتجاهات الذاتية' : 'EigenLab — Eigenvector Lab';
+    document.querySelector('meta[name="description"]').setAttribute('content', currentLanguage === 'ar'
+      ? 'مختبر بصري تفاعلي لفهم المتجهات والقيم الذاتية من خلال التحويلات الهندسية.'
+      : 'An interactive visual lab for learning eigenvectors and eigenvalues through geometric transformations.');
+    plot.setAttribute('aria-label', currentLanguage === 'ar' ? 'رسم تفاعلي لتحويل المتجه والمستوى' : 'Interactive vector transformation plot');
+    updateThemeControls();
+    if (persist) savePreference('eigenlab-language', currentLanguage);
+    render();
+    if (lastQuizAnswer) feedback.textContent = explanations[lastQuizAnswer].text[currentLanguage];
+  }
+
+  function setTheme(theme, persist = true) {
+    currentTheme = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = currentTheme;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', currentTheme === 'dark' ? '#18241f' : '#f5f6f2');
+    Object.assign(palette, currentTheme === 'dark' ? darkPalette : lightPalette);
+    updateThemeControls();
+    if (persist) savePreference('eigenlab-theme', currentTheme);
+    render();
+  }
+
+  cacheTranslations();
+  languageToggle.addEventListener('click', () => setLanguage(currentLanguage === 'ar' ? 'en' : 'ar'));
+  themeToggle.addEventListener('click', () => setTheme(currentTheme === 'dark' ? 'light' : 'dark'));
 
   matrixInputs.forEach(input => input.addEventListener('input', () => {
     document.querySelectorAll('.preset').forEach(button => button.classList.remove('active'));
@@ -198,21 +314,23 @@
 
   const feedback = document.getElementById('quiz-feedback');
   const explanations = {
-    two: { correct: false, text: 'قريب، لكن 2 لا يساوي المضاعف المطلوب: Av = (3, 3) = 3(1, 1)، لذا λ = 3.' },
-    three: { correct: true, text: 'صحيح. Av = (3, 3) = 3(1, 1)، أي إن الاتجاه نفسه بقي، والمتجه تمدّد ثلاثة أضعاف.' },
-    no: { correct: false, text: 'الاتجاه لم يتغير: (3, 3) هو ثلاثة أضعاف (1, 1). إذًا v متجه ذاتي، وλ = 3.' }
+    two: { correct: false, text: { ar: 'قريب، لكن 2 لا يساوي المضاعف المطلوب: Av = (3, 3) = 3(1, 1)، لذا λ = 3.', en: 'Close, but 2 is not the multiplier: Av = (3, 3) = 3(1, 1), so λ = 3.' } },
+    three: { correct: true, text: { ar: 'صحيح. Av = (3, 3) = 3(1, 1)، أي إن الاتجاه نفسه بقي، والمتجه تمدّد ثلاثة أضعاف.', en: 'Correct. Av = (3, 3) = 3(1, 1), so the direction stays fixed and the vector triples in length.' } },
+    no: { correct: false, text: { ar: 'الاتجاه لم يتغير: (3, 3) هو ثلاثة أضعاف (1, 1). إذًا v متجه ذاتي، وλ = 3.', en: 'The direction did not change: (3, 3) is three times (1, 1). Thus v is an eigenvector and λ = 3.' } }
   };
   document.querySelectorAll('.quiz-option').forEach(button => {
     button.addEventListener('click', () => {
+      lastQuizAnswer = button.dataset.answer;
       const answer = explanations[button.dataset.answer];
       document.querySelectorAll('.quiz-option').forEach(option => {
         option.classList.remove('selected', 'wrong');
       });
       button.classList.add(answer.correct ? 'selected' : 'wrong');
       feedback.className = `quiz-feedback ${answer.correct ? 'correct' : 'incorrect'}`;
-      feedback.textContent = answer.text;
+      feedback.textContent = answer.text[currentLanguage];
     });
   });
 
-  render();
+  setLanguage(readPreference('eigenlab-language', 'ar'), false);
+  setTheme(readPreference('eigenlab-theme', 'light'), false);
 })();
